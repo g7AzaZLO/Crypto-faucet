@@ -21,3 +21,5 @@ def execute_non_query(command) -> None:
     conn.commit()
     conn.close()
 
+def delete_user_from_db(user):
+    execute_non_query(f"DELETE FROM faucetClaims WHERE USER_ID = {user}")
