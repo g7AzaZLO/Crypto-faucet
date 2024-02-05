@@ -7,4 +7,5 @@ bot = Bot(token=TG_BOT_KEY)
 
 # Отправка сообщения админу
 async def ping_admin_dm(msg: str) -> None:
+    print("ping admin: " + msg)
     await bot.send_message(ADMIN_USER_ID, msg)
