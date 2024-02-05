@@ -4,10 +4,12 @@ from aiogram.types import BotCommand
 from settings.config import TG_BOT_KEY
 from process.other import ping_admin_dm
 from process.db import create_db
+from process.claim import router_claim
 
 # Инициализация бота
 bot = Bot(token=TG_BOT_KEY)
 dp = Dispatcher()
+dp.include_router(router_claim)
 
 # Команды бота
 cmd = [
