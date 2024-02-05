@@ -2,8 +2,8 @@ import hexbytes.main
 from web3 import Web3
 
 RPC_URL = ""
-ADMIN_USER_ID = ""
-TG_BOT_KEY = ""
+ADMIN_USER_ID =
+TG_BOT_KEY = "]"
 WALLET_ADDR = ""
 DATABASE_FILE = ""
 MNEMONIC = ""
