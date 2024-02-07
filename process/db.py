@@ -10,16 +10,17 @@ async def create_db() -> None:
         await ping_admin_dm("Database exists...")
     else:
         print("Creating Database...")
-        execute_non_query("CREATE TABLE faucetClaims (USER_ID INTEGER, ADDR TEXT, DT FLOAT);")
+        await execute_non_query("CREATE TABLE faucetClaims (USER_ID INTEGER, ADDR TEXT, DT FLOAT);")
         print("Database created successfully")
         await ping_admin_dm("Database created successfully")
 
 
-def execute_non_query(command) -> None:
+async def execute_non_query(command) -> None:
     conn = sqlite3.connect(DATABASE_FILE)
     conn.execute(command)
     conn.commit()
     conn.close()
 
-def delete_user_from_db(user):
-    execute_non_query(f"DELETE FROM faucetClaims WHERE USER_ID = {user}")
+
+async def delete_user_from_db(user):
+    await execute_non_query(f"DELETE FROM faucetClaims WHERE USER_ID = {user}")

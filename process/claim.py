@@ -16,12 +16,12 @@ router_claim = Router()
 # Проверка юзера на использование крана и отсутсвтие баланса
 async def check_user(user: int, address: str) -> str:
     if not await is_low_balance(user, address):
-        delete_user_from_db(user)
+        await delete_user_from_db(user)
         return "You have enough funds!"
     if not await is_low_balance(user, address):
-        delete_user_from_db(user)
+        await delete_user_from_db(user)
         return "You have used the Faucet recently! Wait 24h"
-    execute_non_query("INSERT INTO faucetClaims (USER_ID, ADDR, DT) VALUES (" + str(
+    await execute_non_query("INSERT INTO faucetClaims (USER_ID, ADDR, DT) VALUES (" + str(
         user) + ", '" + address + "', julianday(('now')));")
     return await check_tx(await send_token(address, user), address, user)
 
@@ -68,7 +68,6 @@ async def send_token(address: str, user: int) -> HexStr | None:
     except Exception as e:
         print(f"ERROR: {e}\nContinue...")
         await ping_admin_dm(f"ERROR: {e}")
-        delete_user_from_db(user)
         return None
 
 
@@ -80,12 +79,14 @@ async def check_tx(tx_hash, address, user) -> str:
             print(f"{address} | transaction was sucsessfull: {tx_hash}")
             return f"Transaction was sucsessfull: {tx_hash}"
         else:
-            delete_user_from_db(user)
+            await delete_user_from_db(user)
             print(f"{address} | transaction failed {data['transactionHash'].hex()}")
             return f"Transaction failed {data['transactionHash'].hex()}"
     except Exception as err:
-        delete_user_from_db(address)
+        await delete_user_from_db(user)
         print(f"{address} | unexpected error in <check_tx> function: {err}")
+        for i in range(10):
+            await send_token(address, user)
         return f"Unexpected error in <check_tx> function: {err}"
 
 
