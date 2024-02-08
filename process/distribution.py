@@ -4,7 +4,7 @@ from web3 import Web3
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
-from settings.config import RPC_URL, WALLET_ADDR, WALLET_PK, NUM_TOKEN_TO_SEND
+from settings.config import RPC_URL, WALLET_ADDR, WALLET_PK, NUM_TOKEN_TO_SEND, ADMIN_USER_ID
 
 router_distribution = Router()
 
@@ -53,15 +53,16 @@ async def check_tx(tx_hash, address) -> bool:
 
 @router_distribution.message(Command('distribution'))
 async def contribute(message: Message):
-    address = await string_to_address_list(message.text)
-    while True:
-        new_addr_list = []
-        for i in address:
-            if not await check_tx(await send_token(i), i):
-                new_addr_list.append(i)
-            else:
-                continue
-        print(new_addr_list)
-        address = new_addr_list
-        if len(new_addr_list) == 0:
-            break
+    if message.from_user.id == ADMIN_USER_ID:
+        address = await string_to_address_list(message.text)
+        while True:
+            new_addr_list = []
+            for i in address:
+                if not await check_tx(await send_token(i), i):
+                    new_addr_list.append(i)
+                else:
+                    continue
+            print(new_addr_list)
+            address = new_addr_list
+            if len(new_addr_list) == 0:
+                break
