@@ -26,6 +26,7 @@ async def check_user(user: int, address: str) -> str:
     return await check_tx(await send_token(address, user), address, user)
 
 
+# Проверка баланса на количество токенов менее 11
 async def is_low_balance(user: int, address: str) -> bool:
     try:
         web3 = Web3(Web3.HTTPProvider(RPC_URL))
@@ -39,6 +40,7 @@ async def is_low_balance(user: int, address: str) -> bool:
         return True
 
 
+# Проверка пользователя на использование крана в последние 24ч
 async def is_not_use(user: int, address: str) -> bool:
     conn = sqlite3.connect(DATABASE_FILE).cursor()
     conn.execute("SELECT 1 FROM faucetClaims WHERE (USER_ID = " + str(
@@ -51,6 +53,7 @@ async def is_not_use(user: int, address: str) -> bool:
     return False
 
 
+# Пересылание токенов на адрес
 async def send_token(address: str, user: int) -> HexStr | None:
     try:
         web3 = Web3(Web3.HTTPProvider(RPC_URL))
@@ -71,6 +74,9 @@ async def send_token(address: str, user: int) -> HexStr | None:
         return None
 
 
+# Проверка транзакции на успешность
+# Если транза не прошла, то делается еще 3 попытки
+# Если и 3 попытки не прошли, то сообщение о ошибке
 async def check_tx(tx_hash, address, user) -> str:
     try:
         web3 = Web3(Web3.HTTPProvider(RPC_URL))
@@ -96,7 +102,7 @@ async def check_tx(tx_hash, address, user) -> str:
 
 # Обработка команды /claim
 @router_claim.message(Command('claim'))
-async def claim(message: Message):
+async def claim(message: Message) -> None:
     user = message.from_user.id
     address = message.text.split(' ')[1]
     result = await check_user(user, address)
