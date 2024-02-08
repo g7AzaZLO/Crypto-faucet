@@ -1,3 +1,4 @@
+# Стандартное аби токена
 TOKEN_ABI = """[
     {
         "constant": true,
