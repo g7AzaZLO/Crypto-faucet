@@ -3,10 +3,12 @@ from web3 import Web3
 
 RPC_URL = ""
 ADMIN_USER_ID =
-TG_BOT_KEY = "]"
+TG_BOT_KEY = ""
 WALLET_ADDR = ""
-DATABASE_FILE = ""
+DATABASE_FILE = "faucet.db"
 MNEMONIC = ""
+NUM_TOKEN_TO_SEND = 15 # Количество токенов которое необходимо выдавать
+CHECK_UNDER_NUM_TOKEN = 11 # Проверка на баланс ниже данного значения
 
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
 
