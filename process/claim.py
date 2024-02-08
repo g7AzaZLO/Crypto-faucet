@@ -31,7 +31,7 @@ async def is_low_balance(user: int, address: str) -> bool:
     try:
         web3 = Web3(Web3.HTTPProvider(RPC_URL))
         balance = web3.eth.get_balance(address)
-        balance = web3.from_wei(balance, address)
+        balance = web3.from_wei(balance, 'ether')
         if user == ADMIN_USER_ID:
             return True
         elif balance < CHECK_UNDER_NUM_TOKEN:
