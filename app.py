@@ -5,11 +5,13 @@ from settings.config import TG_BOT_KEY
 from process.other import ping_admin_dm
 from process.db import create_db
 from process.claim import router_claim
+from process.distribution import router_distribution
 
 # Инициализация бота
 bot = Bot(token=TG_BOT_KEY)
 dp = Dispatcher()
 dp.include_router(router_claim)
+dp.include_router(router_distribution)
 
 # Команды бота
 cmd = [
