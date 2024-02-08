@@ -85,8 +85,12 @@ async def check_tx(tx_hash, address, user) -> str:
     except Exception as err:
         await delete_user_from_db(user)
         print(f"{address} | unexpected error in <check_tx> function: {err}")
-        for i in range(10):
-            await send_token(address, user)
+        for i in range(3):
+            trying = await send_token(address, user)
+            if trying is None:
+                continue
+            else:
+                return f"Transaction was sucsessfull: {tx_hash}"
         return f"Unexpected error in <check_tx> function: {err}"
 
 
