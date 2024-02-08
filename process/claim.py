@@ -6,7 +6,7 @@ from web3 import Web3
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
-from settings.config import RPC_URL, ADMIN_USER_ID, DATABASE_FILE, WALLET_ADDR, WALLET_PK
+from settings.config import RPC_URL, ADMIN_USER_ID, DATABASE_FILE, WALLET_ADDR, WALLET_PK, NUM_TOKEN_TO_SEND, CHECK_UNDER_NUM_TOKEN
 from process.db import delete_user_from_db, execute_non_query
 from process.other import ping_admin_dm
 
@@ -31,9 +31,10 @@ async def is_low_balance(user: int, address: str) -> bool:
     try:
         web3 = Web3(Web3.HTTPProvider(RPC_URL))
         balance = web3.eth.get_balance(address)
+        balance = web3.from_wei(balance, address)
         if user == ADMIN_USER_ID:
             return True
-        elif balance < 11:
+        elif balance < CHECK_UNDER_NUM_TOKEN:
             return True
         return False
     except Exception as e:
@@ -61,7 +62,7 @@ async def send_token(address: str, user: int) -> HexStr | None:
         tx = {
             'nonce': nonce,
             'to': address,
-            'value': web3.to_wei(15, 'ether'),
+            'value': web3.to_wei(NUM_TOKEN_TO_SEND, 'ether'),
             'gas': 50000,
             'gasPrice': web3.to_wei('100', 'gwei')}
         signed_tx = web3.eth.account.sign_transaction(tx, WALLET_PK)
